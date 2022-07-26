@@ -1,7 +1,7 @@
 // @ts-ignore
 /* eslint-disable */
 import {request} from 'umi';
-import {TableListItem} from './data';
+import {Result, TableListItem} from './data';
 
 /** 获取规则列表 GET /api/rule */
 export async function rule(
@@ -51,6 +51,15 @@ export async function removeRule(data: { key: number[] }, options?: { [key: stri
   return request<Record<string, any>>('/api/rule', {
     data,
     method: 'DELETE',
+    ...(options || {}),
+  });
+}
+
+
+export async function uploading(data: FormData, options?: { [p: string]: any }) {
+  return request<Result>('/api/upload/adddish', {
+    data,
+    method: 'POST',
     ...(options || {}),
   });
 }

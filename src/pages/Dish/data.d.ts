@@ -34,3 +34,8 @@ export type TableListParams = {
   filter?: Record<string, any[]>;
   sorter?: Record<string, any>;
 };
+export type Result = {
+  msg: string;
+  code: number;
+  data: any;
+}

@@ -11,7 +11,7 @@ import type {FormValueType} from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import {addRule, removeRule, rule, updateRule} from './service';
 import type {TableListItem, TableListPagination} from './data';
-import {request} from "umi";
+
 
 /**
  * 添加节点
@@ -65,7 +65,6 @@ const handleUpdate = async (fields: FormValueType, currentRow?: TableListItem) =
 const handleRemove = async (selectedRows: TableListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
-
   try {
     await removeRule({
       key: selectedRows.map((row) => row.key),
@@ -80,6 +79,24 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
   }
 };
 
+
+// // imgUpload箭头函数
+// const Uploader = {
+//   customRequest: (options: { onSuccess: any; onError: any; file: any; }) => {
+//     const { onSuccess, onError, file, } = options;
+//     var formData = new FormData();
+//     formData.append('file', file);
+//     console.log(formData);
+//     // /upload为图片上传的地址，后台只需要一个图片的path
+//     // name，path，status是组件上传需要的格式需要自己去拼接
+//     request('/api/upload/adddish',{method: 'POST',data: formData}).then((data) => {
+//       const _response = { name: file.name, status: "done",path: data.path  };
+//       //请求成功后把file赋值上去
+//       onSuccess(_response, file);
+//     }).catch(onError);
+//   },
+// }
+
 const TableList: React.FC = () => {
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
@@ -91,24 +108,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
   /** 国际化配置 */
-  // imgUpload箭头函数
-  const Upload = {
-    //数量
-    maxCount: 1,
-    accept: "image/*",
-    customRequest: (options: { onSuccess: any; onError: any; file: any; }) => {
-      const { onSuccess, onError, file, } = options;
-      var formData = new FormData();
-      formData.append('file', file);
-      // /upload为图片上传的地址，后台只需要一个图片的path
-      // name，path，status是组件上传需要的格式需要自己去拼接
-      request('/upload',{method: 'POST',data: formData}).then((data) => {
-        const _response = { name: file.name, status: "done",path: data.path  };
-        //请求成功后把file赋值上去
-        onSuccess(_response, file);
-      }).catch(onError);
-    },
-  }
+
 
 
   const columns: ProColumns<TableListItem>[] = [
@@ -279,15 +279,24 @@ const TableList: React.FC = () => {
         }}
       >
 
+        {/*<ProFormUploadButton*/}
+        {/*    name="upload"*/}
+        {/*    label="图片上传"*/}
+        {/*    max={1}*/}
+        {/*    fieldProps={{*/}
+        {/*      ...Uploader,*/}
+        {/*    }}*/}
+        {/*    // action="/"*/}
+        {/*    // extra="上传商品图片..."*/}
+        {/*/>*/}
+
         <ProFormUploadButton
             name="upload"
-            label="图片上传"
             max={1}
             fieldProps={{
-              ...Upload,
+              name: 'file',
             }}
-            // action="/"
-            // extra="上传商品图片..."
+            action="/api/upload/adddish"
         />
 
 
