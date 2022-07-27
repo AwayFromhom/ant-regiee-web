@@ -1,17 +1,42 @@
 export type TableListItem = {
-  key: number;
-  disabled?: boolean;
-  href: string;
-  avatar: string;
-  name: string;
-  owner: string;
-  desc: string;
-  callNo: number;
-  status: string;
-  updatedAt: Date;
-  createdAt: Date;
-  progress: number;
+
+  id: number
+
+  name: string
+  //菜品分类id
+  tegoryId: number
+  //菜品价格
+  price: string
+  //商品码
+  code: string
+  //图片
+  image: string
+  //描述信息
+  description: string
+  //0 停售 1 起售
+  status: int
+  //顺序
+  sort: number
+
+  createTime: Date
+  updateTime: Date
+  createUser: string
+  updateUser: string
+  flavors: flavors[]
 };
+
+interface flavors {
+  name: string
+  value: string
+
+}
+
+
+interface Option {
+  value: string | number;
+  label: string;
+  children?: Option[];
+}
 
 export type TableListPagination = {
   total: number;

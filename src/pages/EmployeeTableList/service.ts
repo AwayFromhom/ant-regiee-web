@@ -48,14 +48,6 @@ export async function addemployee(data: { [key: string]: any }, options?: { [key
   });
 }
 
-/** 删除规则 DELETE /api/rule */
-// export async function removeRule(data: { id: any[] }, options?: { [id: string]: any }) {
-//   return request<Result>('/api/employee', {
-//     data,
-//     method: 'DELETE',
-//     ...(options || {}),
-//   });
-// }
 
 // 删除
 export async function removeRule(keys: number[]) {
