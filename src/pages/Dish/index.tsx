@@ -1,6 +1,6 @@
 import {FileAddOutlined} from '@ant-design/icons';
-import {Button, Drawer, Input, message} from 'antd';
-import React, {useEffect, useRef, useState} from 'react';
+import {Button, Drawer, Image, Input, message} from 'antd';
+import React, {useRef, useState} from 'react';
 import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
@@ -16,8 +16,8 @@ import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import type {FormValueType} from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
-import {adddish, queryCategory, removeRule, rule, updateRule} from './service';
-import type {TableListItem, TableListPagination} from './data';
+import {adddish, queryCategory, queryCategoryname, removeRule, rule, updateRule} from './service';
+import type {Result, TableListItem, TableListPagination} from './data';
 
 import {ProForm, ProFormDependency, ProFormList} from "@ant-design/pro-components";
 
@@ -168,12 +168,33 @@ const TableList: React.FC = () => {
         {
             title: '图片',
             dataIndex: 'image',
-            valueType: 'image', search: false,
+            valueType: 'text',
+            search: false,
+            render: (image) => {
+
+                return (
+                    <>
+                        <Image
+                            width={200}
+                            src={'/api/file/downloaddish/' + image}/>
+                    </>
+                )
+            }
         }, {
             title: '菜品分类',
-            dataIndex: 'tegoryId',
+            dataIndex: 'categoryId',
             valueType: 'text',
+            render: (demo: any, r: Result) => {
+                console.log(demo)
+                async () => {
+                    r = await queryCategoryname(demo?.categoryId);
+                    console.log(r);
+                    return (
+                        <h6>{r.data}</h6>
+                    );
+                };
 
+            }
         },
         {
             title: '售价',
@@ -198,7 +219,7 @@ const TableList: React.FC = () => {
         {
             title: '最后操作时间',
             sorter: true,
-            dataIndex: 'updatedAt',
+            dataIndex: 'updateTime',
             valueType: 'dateTime', search: false,
             renderFormItem: (item, {defaultRender, ...rest}, form) => {
                 const status = form.getFieldValue('status');
@@ -218,20 +239,16 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => [
-        <a
-          key="config"
-          onClick={() => {
-            handleUpdateModalVisible(true);
-            setCurrentRow(record);
-          }}
-        >
-          配置
-        </a>,
-        <a key="subscribeAlert" href="https://procomponents.ant.design/">
-          订阅警报
-        </a>,
-      ],
+        render: (_, record) =>
+            <a
+                key="config"
+                onClick={() => {
+                    handleUpdateModalVisible(true);
+                    setCurrentRow(record);
+                }}
+            >
+                配置
+            </a>
     },
   ];
 
@@ -394,11 +411,7 @@ const TableList: React.FC = () => {
                     />
                     <ProFormDependency name={['name']}>
                         {({name}) => {
-                            let [option, setOptions] = useState<any[]>();
-
-                            useEffect(() => {
-                                setOptions([]);
-                            }, [option])
+                            let option: any[];
 
                             const option1 = [
                                 {label: '无糖', value: '无糖'},
@@ -427,15 +440,19 @@ const TableList: React.FC = () => {
 
                             switch (name) {
                                 case '甜味':
+                                    option = [];
                                     option = option1;
                                     break;
                                 case '温度':
+                                    option = [];
                                     option = option2;
                                     break;
                                 case '忌口':
+                                    option = [];
                                     option = option3;
                                     break;
                                 case '辣度':
+                                    option = [];
                                     option = option4;
                                     break;
                                 default:
@@ -446,11 +463,16 @@ const TableList: React.FC = () => {
                                     width="md"
                                     name="value"
                                     placeholder="口味"
-
                                     fieldProps={{
                                         labelInValue: false,
                                         style: {
                                             minWidth: 140,
+                                            autoClearSearchValue: true,//选中后清空搜索框
+                                            //使用onChange onBlur
+                                            onChange: (options: any) => {
+                                                return options //必须要return一个值出去 表单项才会展示值在输入框上
+                                            },
+                                            // onBlur
                                         },
                                     }}
                                     options={option}
@@ -476,7 +498,7 @@ const TableList: React.FC = () => {
                 fieldProps={
                     {name: 'file'}
                 }
-                action="/api/upload/adddish"
+                action="/api/file/adddish"
             />
 
             <ProFormTextArea

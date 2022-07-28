@@ -4,7 +4,8 @@ export type TableListItem = {
 
   name: string
   //菜品分类id
-  tegoryId: number
+  categoryId: number
+  categoryName: string
   //菜品价格
   price: string
   //商品码
@@ -28,7 +29,6 @@ export type TableListItem = {
 interface flavors {
   name: string
   value: string
-
 }
 
 
@@ -59,6 +59,7 @@ export type TableListParams = {
   filter?: Record<string, any[]>;
   sorter?: Record<string, any>;
 };
+
 export type Result = {
   msg: string;
   code: number;

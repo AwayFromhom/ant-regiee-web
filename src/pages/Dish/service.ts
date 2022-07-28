@@ -73,3 +73,9 @@ export async function queryCategory() {
     method: 'GET',
   });
 }
+
+export async function queryCategoryname(categoryId: any) {
+  return request<Result>('/api/category/querycategoryname/' + categoryId, {
+    method: 'GET',
+  });
+}
