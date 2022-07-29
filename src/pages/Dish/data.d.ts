@@ -1,7 +1,6 @@
 export type TableListItem = {
 
   id: number
-
   name: string
   //菜品分类id
   categoryId: number
@@ -18,12 +17,12 @@ export type TableListItem = {
   status: int
   //顺序
   sort: number
-
   createTime: Date
   updateTime: Date
   createUser: string
   updateUser: string
   flavors: flavors[]
+
 };
 
 interface flavors {

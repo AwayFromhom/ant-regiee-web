@@ -14,22 +14,15 @@ import {
 } from '@ant-design/pro-form';
 import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import type {FormValueType} from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
-import {adddish, queryCategory, queryCategoryname, removeRule, rule, updateRule} from './service';
-import type {Result, TableListItem, TableListPagination} from './data';
+import {adddish, queryCategory, removeRule, rule, updateRule} from './service';
+import type {TableListItem, TableListPagination} from './data';
 
 import {ProForm, ProFormDependency, ProFormList} from "@ant-design/pro-components";
 
 
-/**
- * 添加节点
- *
- * @param fields
- */
+function handle(fields: TableListItem) {
 
-const handleAdd = async (fields: TableListItem) => {
-    const hide = message.loading('正在添加');
     //处理数据
 
     if (fields.image !== null) {
@@ -51,6 +44,18 @@ const handleAdd = async (fields: TableListItem) => {
             console.log(newvalues);
             fields.flavors[i].value = newvalues;
         }
+    console.log(fields)
+}
+
+/**
+ * 添加节点
+ *
+ * @param fields
+ */
+
+const handleAdd = async (fields: TableListItem) => {
+    const hide = message.loading('正在添加');
+    handle(fields);
 
     try {
         const msg = await adddish({...fields});
@@ -78,19 +83,24 @@ const handleAdd = async (fields: TableListItem) => {
  * @param fields
  */
 
-const handleUpdate = async (fields: FormValueType, currentRow?: TableListItem) => {
+const handleUpdate = async (fields: TableListItem) => {
     const hide = message.loading('正在修改员工信息');
 
-  try {
-      const msg = await updateRule({
-          ...currentRow,
-          ...fields,
-      });
-      console.log(msg);
-      if (msg.code === 1) {
-          hide();
-          message.success('修改成功');
-          return true;
+    console.log(fields)
+
+    if (fields) {
+        handle(fields as TableListItem);
+    }
+
+    try {
+        const msg = await updateRule({
+            ...fields,
+        });
+        console.log(msg);
+        if (msg.code === 1) {
+            hide();
+            message.success('修改成功');
+            return true;
       } else {
           hide();
           message.error(msg.msg);
@@ -123,21 +133,40 @@ const handleRemove = async (selectedRows: TableListItem[]) => {
           return false;
       }
   } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
+      hide();
+      message.error('删除失败，请重试');
+      return false;
   }
 };
 
+
+/**
+ * 查询所有菜品分类
+ */
+function getRequest() {
+    return async () => {//返回的select网络请求
+        let r = await queryCategory();
+        console.log(r);
+        let res = [];
+        for (let i = 0; i < r.data.length; i++) {
+            let temp = {};
+            temp['label'] = r.data[i].name;
+            temp['value'] = r.data[i].id;
+            res.push(temp)
+        }
+        return res
+    };
+}
+
 const TableList: React.FC = () => {
-  /** 新建窗口的弹窗 */
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  /** 分布更新窗口的弹窗 */
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-  const [showDetail, setShowDetail] = useState<boolean>(false);
-  const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<TableListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
+    /** 新建窗口的弹窗 */
+    const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+    /** 分布更新窗口的弹窗 */
+    const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+    const [showDetail, setShowDetail] = useState<boolean>(false);
+    const actionRef = useRef<ActionType>();
+    const [currentRow, setCurrentRow] = useState<TableListItem>();
+    const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
     /** 国际化配置 */
 
 
@@ -182,19 +211,9 @@ const TableList: React.FC = () => {
             }
         }, {
             title: '菜品分类',
-            dataIndex: 'categoryId',
+            dataIndex: 'categoryName',
             valueType: 'text',
-            render: (demo: any, r: Result) => {
-                console.log(demo)
-                async () => {
-                    r = await queryCategoryname(demo?.categoryId);
-                    console.log(r);
-                    return (
-                        <h6>{r.data}</h6>
-                    );
-                };
-
-            }
+            // search: false,
         },
         {
             title: '售价',
@@ -250,19 +269,20 @@ const TableList: React.FC = () => {
                 配置
             </a>
     },
-  ];
+    ];
 
-  return (
-    <PageContainer>
-      <ProTable<TableListItem, TableListPagination>
-          headerTitle="菜品信息管理"
-          actionRef={actionRef}
-          rowKey="id"
-          search={{
-              labelWidth: 120,
-          }}
-          toolBarRender={() => [
-          <Button
+
+    return (
+        <PageContainer>
+            <ProTable<TableListItem, TableListPagination>
+                headerTitle="菜品信息管理"
+                actionRef={actionRef}
+                rowKey="id"
+                search={{
+                    labelWidth: 120,
+                }}
+                toolBarRender={() => [
+                    <Button
             type="primary"
             key="primary"
             onClick={() => {
@@ -293,10 +313,10 @@ const TableList: React.FC = () => {
                 {selectedRowsState.length}
               </a>{' '}
               项 &nbsp;&nbsp;
-
             </div>
           }
         >
+
           <Button
             onClick={async () => {
               await handleRemove(selectedRowsState);
@@ -342,18 +362,7 @@ const TableList: React.FC = () => {
 
             <ProFormSelect
                 width="md"
-                request={async () => {//返回的select网络请求
-                    let r = await queryCategory();
-                    console.log(r);
-                    let res = [];
-                    for (let i = 0; i < r.data.length; i++) {
-                        let temp = {};
-                        temp['label'] = r.data[i].name;
-                        temp['value'] = r.data[i].id;
-                        res.push(temp)
-                    }
-                    return res
-                }}
+                request={getRequest()}
                 name="categoryId"
                 label="菜品分类"
                 rules={[
