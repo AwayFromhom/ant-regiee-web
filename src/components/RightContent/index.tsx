@@ -37,10 +37,6 @@ const GlobalHeaderRight: React.FC = () => {
             label: <a href="https://www.baidu.com/">baidu</a>,
             value: 'baidu',
           },
-          {
-            label: <a href="https://prolayout.ant.design/">Pro Layout</a>,
-            value: 'Pro Layout',
-          },
         ]}
         // onSearch={value => {
         //   console.log('input', value);

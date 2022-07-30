@@ -21,15 +21,21 @@ import type {TableListItem, TableListPagination} from './data';
 import {ProForm, ProFormDependency, ProFormList} from "@ant-design/pro-components";
 
 
-function handle(fields: TableListItem) {
+/**
+ * 添加节点
+ *
+ * @param fields
+ */
 
+const handleAdd = async (fields: TableListItem) => {
+    const hide = message.loading('正在添加');
     //处理数据
 
-    if (fields.image !== null) {
+    if (fields.image) {
         fields.image = fields.image[0]?.response?.data;
     }
 
-    if (fields.flavors !== null)
+    if (fields.flavors)
         for (let i = 0; i < fields.flavors.length; i++) {
             let values = fields.flavors[i].value;
             let newvalues = "[";
@@ -45,17 +51,6 @@ function handle(fields: TableListItem) {
             fields.flavors[i].value = newvalues;
         }
     console.log(fields)
-}
-
-/**
- * 添加节点
- *
- * @param fields
- */
-
-const handleAdd = async (fields: TableListItem) => {
-    const hide = message.loading('正在添加');
-    handle(fields);
 
     try {
         const msg = await adddish({...fields});
@@ -83,17 +78,35 @@ const handleAdd = async (fields: TableListItem) => {
  * @param fields
  */
 
-const handleUpdate = async (fields: TableListItem) => {
+const handleUpdate = async (fields: TableListItem, currentRow?: TableListItem) => {
     const hide = message.loading('正在修改员工信息');
 
     console.log(fields)
-
-    if (fields) {
-        handle(fields as TableListItem);
+    if (fields.image) {
+        fields.image = fields.image[0]?.response?.data;
     }
+
+    if (fields.flavors)
+        for (let i = 0; i < fields.flavors.length; i++) {
+            let values = fields.flavors[i].value;
+            let newvalues = "[";
+            for (let j = 0; j < values.length; j++) {
+                if (j == values.length - 1) {
+                    newvalues = newvalues + "\"" + values[j].toString() + "\"";
+                    break;
+                }
+                newvalues = newvalues + "\"" + values[j].toString() + "\"\,"
+            }
+            newvalues = newvalues + "]";
+            console.log(newvalues);
+            fields.flavors[i].value = newvalues;
+        }
+    console.log(fields)
+
 
     try {
         const msg = await updateRule({
+            ...currentRow,
             ...fields,
         });
         console.log(msg);

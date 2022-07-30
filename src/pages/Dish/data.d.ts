@@ -1,5 +1,4 @@
 export type TableListItem = {
-
   id: number
   name: string
   //菜品分类id
@@ -22,7 +21,6 @@ export type TableListItem = {
   createUser: string
   updateUser: string
   flavors: flavors[]
-
 };
 
 interface flavors {

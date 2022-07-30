@@ -50,7 +50,8 @@ const handleAdd = async (fields: TableListItem) => {
 
 const handleUpdate = async (fields: FormValueType, currentRow?: TableListItem) => {
   const hide = message.loading('正在修改员工信息');
-
+  console.log(fields);
+  console.log(currentRow);
   try {
     const msg = await updateRule({
       ...currentRow,
@@ -60,7 +61,7 @@ const handleUpdate = async (fields: FormValueType, currentRow?: TableListItem) =
     if (msg.code === 1) {
       hide();
       message.success('修改成功');
-      return  true;
+      return true;
     }
     else {
       hide();
