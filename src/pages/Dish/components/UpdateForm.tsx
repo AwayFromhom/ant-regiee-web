@@ -114,7 +114,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
                 fieldProps={
                     {name: 'file'}
                 }
-                action="/api/file/adddish"
+                action="/api/file/addphoto"
             />
 
         </StepsForm.StepForm>

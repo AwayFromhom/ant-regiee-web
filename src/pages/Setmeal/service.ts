@@ -1,7 +1,8 @@
 // @ts-ignore
 /* eslint-disable */
 import {request} from 'umi';
-import {Result, TableListItem} from './data';
+import {TableListItem} from './data';
+import {Result} from "@/pages/Dish/data";
 
 /** 获取规则列表 GET /api/rule */
 export async function rule(
@@ -19,7 +20,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/api/dish/page', {
+  }>('/api/setmeal/page', {
     method: 'GET',
     params: {
       ...params,
@@ -32,7 +33,7 @@ export async function rule(
 
 /** 修改规则 PUT /api/rule */
 export async function updateRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<Result>('/api/dish', {
+  return request<Result>('/api/setmeal', {
     data,
     method: 'PUT',
     ...(options || {}),
@@ -40,8 +41,8 @@ export async function updateRule(data: { [key: string]: any }, options?: { [key:
 }
 
 /** 新建规则 POST /api/rule */
-export async function adddish(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<Result>('/api/dish', {
+export async function addsetmeal(data: { [key: string]: any }, options?: { [key: string]: any }) {
+  return request<Result>('/api/setmeal', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -52,19 +53,15 @@ export async function adddish(data: { [key: string]: any }, options?: { [key: st
 // 删除
 export async function removeRule(keys: number[]) {
   console.log(keys);
-  return request<Result>('/api/dish', {
+  return request<Result>('/api/setmeal', {
     method: 'DELETE',
     data: keys,
   });
 }
 
-/**
- * 上传图片
- * @param data
- * @param options
- */
+
 export async function uploading(data: FormData, options?: { [p: string]: any }) {
-  return request<Result>('/api/upload/addphoto', {
+  return request<Result>('/api/upload/addsetmeal', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -72,14 +69,20 @@ export async function uploading(data: FormData, options?: { [p: string]: any }) 
 }
 
 
-export async function queryCategory() {
-  return request<Result>('/api/category/querycategory/1', {
+/**
+ * 查询套餐分类
+ */
+export async function querysetmealCategory() {
+  return request<Result>('/api/category/querycategory/2', {
     method: 'GET',
   });
 }
 
-export async function queryCategoryname(categoryId: any) {
-  return request<Result>('/api/category/querycategoryname/' + categoryId, {
+/**
+ * 查询所有菜品
+ */
+export async function querydishes() {
+  return request<Result>('/api/dish/all', {
     method: 'GET',
   });
 }

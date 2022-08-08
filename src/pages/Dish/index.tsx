@@ -225,8 +225,8 @@ const TableList: React.FC = () => {
         }, {
             title: '菜品分类',
             dataIndex: 'categoryName',
-            valueType: 'text',
             // search: false,
+
         },
         {
             title: '售价',

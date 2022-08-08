@@ -59,6 +59,12 @@ export default [
     component: './Dish',
   },
   {
+    name: '套餐管理',
+    icon: 'RedEnvelopeOutlined',
+    path: '/setmeal',
+    component: './Setmeal',
+  },
+  {
     component: './404',
   },
 ];
